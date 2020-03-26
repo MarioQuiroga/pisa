@@ -1,1 +1,0 @@
-cmd='./autogen.sh;&&;./configure;--prefix=/home/mquiroga/tp-final-ir/pisa_dev/build_dev/gumbo-parser'
