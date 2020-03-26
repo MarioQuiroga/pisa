@@ -22,6 +22,8 @@
 #include "wand_data_compressed.hpp"
 #include "wand_data_raw.hpp"
 
+
+
 namespace pisa {
 
 using term_id_type = uint32_t;

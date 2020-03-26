@@ -14,9 +14,16 @@
 #include "codec/varintgb.hpp"
 
 #include "binary_freq_collection.hpp"
-#include "block_freq_index.hpp"
 
+// macro defined in queries_with_caching.cpp
+#ifdef __QUERIES_CACHING__
+#include "caching_files/block_freq_index.hpp"
+#include "caching_files/freq_index.hpp"
+#else
+#include "block_freq_index.hpp"
 #include "freq_index.hpp"
+#endif 
+
 #include "mixed_block.hpp"
 #include "sequence/partitioned_sequence.hpp"
 #include "sequence/positive_sequence.hpp"

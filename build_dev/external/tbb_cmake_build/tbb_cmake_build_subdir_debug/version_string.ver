@@ -1,0 +1,11 @@
+#define __TBB_VERSION_STRINGS(N) \
+#N": BUILD_HOST		srv3 (x86_64)" ENDL \
+#N": BUILD_OS		Ubuntu 18.04.2 LTS" ENDL \
+#N": BUILD_KERNEL	Linux 4.15.0-88-generic #88-Ubuntu SMP Tue Feb 11 20:11:34 UTC 2020" ENDL \
+#N": BUILD_GCC		g++ (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0" ENDL \
+#N": BUILD_LIBC	2.27" ENDL \
+#N": BUILD_LD		" ENDL \
+#N": BUILD_TARGET	intel64 on cc7.5.0_libc2.27_kernel4.15.0" ENDL \
+#N": BUILD_COMMAND	/usr/bin/c++ -DTBB_USE_DEBUG -DDO_ITT_NOTIFY -g -O0 -DUSE_PTHREAD -m64 -mrtm -fPIC -flifetime-dse=1 -D__TBB_BUILD=1 -Wall -Wextra -Wno-parentheses -Wno-sized-deallocation -std=c++17 -I/home/mquiroga/tp-final-ir/pisa_dev/external/tbb/./src -I/home/mquiroga/tp-final-ir/pisa_dev/external/tbb/./src/rml/include -I/home/mquiroga/tp-final-ir/pisa_dev/external/tbb/./include -I." ENDL \
+
+#define __TBB_DATETIME "Thu Mar 26 16:02:46 UTC 2020"
