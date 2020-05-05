@@ -74,8 +74,9 @@ void op_perftest(Functor query_func,
 {
 
     std::vector<double> query_times;
-
+    //std::cout << runs << std::endl;
     for (size_t run = 0; run <= runs; ++run) {
+        //std::cout << queries.size() << std::endl;
         for (auto const &query : queries) {
             auto usecs = run_with_timer<std::chrono::microseconds>([&]() {
                 uint64_t result = query_func(query);
@@ -83,10 +84,11 @@ void op_perftest(Functor query_func,
             });
             if (run != 0) { // first run is not timed
                 query_times.push_back(usecs.count());
+                //std::cout << "qqqqqqqq" << std::endl;
             }
         }
     }
-
+    //std::cout << query_times.size() << std::endl;
     if (false) {
         for (auto t : query_times) {
             std::cout << (t / 1000) << std::endl;

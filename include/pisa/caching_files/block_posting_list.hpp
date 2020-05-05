@@ -63,7 +63,6 @@ namespace pisa {
                                  BlockDataRange const& input_blocks)
         {
             TightVariableByte::encode_single(n, out);
-            assert(input_blocks.front().index == 0); // first block must remain first
 
             uint64_t blocks = input_blocks.size();
             size_t begin_block_maxs = out.size();
@@ -132,6 +131,9 @@ namespace pisa {
 
             void PISA_ALWAYSINLINE next_geq(uint64_t lower_bound)
             {
+                /* std::cout << lower_bound << std::endl;
+                std::cout << m_cur_docid << std::endl;
+                std::cout << position() << std::endl; */
                 assert(lower_bound >= m_cur_docid || position() == 0);
                 if (PISA_UNLIKELY(lower_bound > m_cur_block_max)) {
                     // binary search seems to perform worse here
@@ -331,11 +333,11 @@ namespace pisa {
                     intrinsics::prefetch(m_freqs_block_data);		        
                     m_freqs_decoded = false;
                     //store in cache 
-                    Cache_data  data;
-                    data.block = m_docs_buf;
-                    data.next_ptr = (unsigned int*)m_freqs_block_data;
-                    data.m_freq_decoded = false;
-                    m_cache->insert(std::pair<uint64_t, uint64_t>(m_term_id, block), &data);			
+                    std::vector<uint32_t> docs(m_docs_buf);
+                    Cache_data  data(docs, (unsigned int*)m_freqs_block_data);
+
+                    //Cache_data  data(m_docs_buf, (unsigned int*)m_freqs_block_data);
+                    m_cache->insert(std::pair<uint64_t, uint64_t>(m_term_id, block), data);			
                 }
                 m_docs_buf[0] += cur_base;
                 m_cur_block = block;
@@ -344,22 +346,6 @@ namespace pisa {
                 if (Profile) {
                     ++m_block_profile[2 * m_cur_block];
                 }
-                /*		
-                m_freqs_block_data =
-                    BlockCodec::decode(block_data, m_docs_buf.data(),
-                                       m_cur_block_max - cur_base - (m_cur_block_size - 1),
-                                       m_cur_block_size);
-                intrinsics::prefetch(m_freqs_block_data);
-
-                m_docs_buf[0] += cur_base;
-
-                m_cur_block = block;
-                m_pos_in_block = 0;
-                m_cur_docid = m_docs_buf[0];
-                m_freqs_decoded = false;
-                if (Profile) {
-                    ++m_block_profile[2 * m_cur_block];
-                }*/
             }
 
             void PISA_NOINLINE decode_freqs_block()
@@ -379,6 +365,7 @@ namespace pisa {
                     }
                     //store in cache
                     data->freqs = m_freqs_buf;
+                    data->m_freq_decoded = true;
                 }
                 m_freqs_decoded = true;
                 /*

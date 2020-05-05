@@ -32,10 +32,11 @@ public:
     }
 
 
-    void insert(Key key, Data * data){
+    void insert(Key key, Data data){
         typename std::unordered_map<Key, Data*, hash>::iterator i = storage.find(key);
-        if(i == storage.end()){   
-            policy.insert(key, data, &storage, max_entries, &cur_entries);
+        if(i == storage.end()){
+            Data * d = new Data(data.block, data.next_ptr);   
+            policy.insert(key, d, storage, max_entries, &cur_entries);
         }
     }
 
@@ -52,9 +53,7 @@ public:
     }
 
     void set_max_entries(int size){
-        std::cout << "set_max_entries function" << std::endl;
         max_entries = size;
-        std::cout << "set_max_entries function2" << std::endl;
     }
 
 };

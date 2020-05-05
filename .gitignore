@@ -23,3 +23,5 @@ Testing/
 docs/_build/
 
 node_modules
+
+.vscode/

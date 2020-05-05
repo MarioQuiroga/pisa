@@ -30,11 +30,11 @@ public:
         sink(index);
     }   
 
-    void insert(Key key, Data * data, std::unordered_map<Key, Data*, hash> * storage, int max_entries, int * cur_entries){        
+    void insert(Key key, Data * data, std::unordered_map<Key, Data*, hash> & storage, int max_entries, int * cur_entries){        
         if(max_entries == *cur_entries){
             // find to min freq to remove
             Key oldKey = pq[1]->key;
-            storage->erase(oldKey);
+            storage.erase(oldKey);
             mp.erase(oldKey);
             Node<Key>* newnode = new Node<Key>(key, ++ts);
             pq[1] = newnode;
@@ -48,7 +48,7 @@ public:
             *cur_entries += 1;
         }
         std::pair<Key,Data*> d(key,data);
-        storage->insert(d);
+        storage.insert(d);
     } 
 
     /*
