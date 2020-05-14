@@ -82,6 +82,8 @@ void op_perftest(Functor query_func,
         std::sort(query_times.begin(), query_times.end());
         double avg =
             std::accumulate(query_times.begin(), query_times.end(), double()) / query_times.size();
+        double total_time =
+            std::accumulate(query_times.begin(), query_times.end(), double());
         double q50 = query_times[query_times.size() / 2];
         double q90 = query_times[90 * query_times.size() / 100];
         double q95 = query_times[95 * query_times.size() / 100];
@@ -91,6 +93,7 @@ void op_perftest(Functor query_func,
         spdlog::info("50% quantile: {}", q50);
         spdlog::info("90% quantile: {}", q90);
         spdlog::info("95% quantile: {}", q95);
+        spdlog::info("Total time: {}", total_time);
 
         stats_line()("type", index_type)("query", query_type)("avg", avg)("q50", q50)("q90", q90)(
             "q95", q95);

@@ -29,6 +29,11 @@ namespace pisa {
             m_cache->set_max_entries(10);
         }
 
+
+        double get_hit_ratio(){
+            return m_cache->get_hit_ratio();
+       }
+
         class builder {
         public:
             builder(uint64_t num_docs, global_parameters const& params)

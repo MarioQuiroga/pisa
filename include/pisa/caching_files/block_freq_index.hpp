@@ -26,6 +26,10 @@ namespace pisa {
             m_cache = new Cache<type_pair, Cache_data, pair_hash, Policy>((int)size);            
         }
 
+        double get_hit_ratio(){
+            return m_cache->get_hit_ratio();
+       }
+
         class builder {
         public:
             builder(uint64_t num_docs, global_parameters const& params)

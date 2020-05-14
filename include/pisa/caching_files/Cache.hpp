@@ -14,21 +14,31 @@ class Cache {
     Policy<Key, Data, hash> policy;
     int max_entries;
     int cur_entries;
+    double count_hit;
+    double count_queries;
 
 public:
     Cache(int size=0){
         max_entries = size;
         cur_entries = 0;
+        count_hit = 0;
+        count_queries = 0;
     }
 
     Data * get(Key key){
+        count_queries += 1;
         typename std::unordered_map<Key, Data*, hash>::iterator i = storage.find(key);
         if(i == storage.end()){
             return NULL;
         }
         // return value, but first update its placed in your policy
         policy.update_place(key);
+        count_hit += 1;
         return i->second;
+    }
+
+    double get_hit_ratio(){
+        return count_hit/count_queries;
     }
 
 

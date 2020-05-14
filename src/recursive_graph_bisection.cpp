@@ -135,5 +135,6 @@ int main(int argc, char const *argv[])
            encode_payload_vector(reordered_documents.begin(), reordered_documents.end()).to_file(*reordered_documents_filename);
         }
     }
+    std::cout << "Done." << std::endl;
     return 0;
 }

@@ -97,18 +97,21 @@ void op_perftest(Functor query_func,
         std::sort(query_times.begin(), query_times.end());
         double avg =
             std::accumulate(query_times.begin(), query_times.end(), double()) / query_times.size();
+        double total_time =
+            std::accumulate(query_times.begin(), query_times.end(), double());
         double q50 = query_times[query_times.size() / 2];
         double q90 = query_times[90 * query_times.size() / 100];
         double q95 = query_times[95 * query_times.size() / 100];
 
-        spdlog::info("---- {} {}", index_type, query_type);
+        spdlog::info("Index type {}", index_type);
         spdlog::info("Mean: {}", avg);
         spdlog::info("50% quantile: {}", q50);
         spdlog::info("90% quantile: {}", q90);
         spdlog::info("95% quantile: {}", q95);
-
-        stats_line()("type", index_type)("query", query_type)("avg", avg)("q50", q50)("q90", q90)(
-            "q95", q95);
+        spdlog::info("Total time: {}", total_time);
+        spdlog::info("Total querys: {}", query_times.size());
+        //stats_line()("type", index_type)("query", query_type)("avg", avg)("q50", q50)("q90", q90)(
+        //    "q95", q95);
     }
 }
 
@@ -253,7 +256,9 @@ void perftest(const std::string &index_filename,
         if (extract) {
             extract_times(query_fun, queries, type, t, 2, std::cout);
         } else {
-            op_perftest(query_fun, queries, type, t, 2);
+            op_perftest(query_fun, queries, type, t, 2);            
+            spdlog::info("Policy: {}", policy);
+            spdlog::info("Hit Ratio: {}", index.get_hit_ratio());
         }
     }
 }

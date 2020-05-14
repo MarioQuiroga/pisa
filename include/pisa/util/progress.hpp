@@ -26,7 +26,7 @@ class progress {
     void update(size_t inc) {
         std::unique_lock<std::mutex> lock(m_mut);
         m_count += inc;
-        print_status();
+        //print_status();
     }
 
    private:
