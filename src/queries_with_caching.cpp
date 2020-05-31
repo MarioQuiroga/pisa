@@ -3,6 +3,7 @@
 #include <numeric>
 #include <optional>
 #include <string>
+#include <fstream>
 
 #define __QUERIES_CACHING__
 
@@ -138,7 +139,7 @@ void perftest(const std::string &index_filename,
     spdlog::info("Loading index from {}", index_filename);
     mio::mmap_source m(index_filename.c_str());
     mapper::map(index, m);
-    //std::cout << "Init Cache" << std::endl;
+    std::cout << "Init Cache" << std::endl;
     index.init_cache(size);
 
     spdlog::info("Warming up posting lists");
@@ -280,6 +281,7 @@ int main(int argc, const char **argv)
     std::string policy;
     uint64_t k = configuration::get().k;
     uint64_t size_cache;
+    uint64_t queries_size;
     bool compressed = false;
     bool extract = false;
     bool silent = false;
@@ -291,6 +293,7 @@ int main(int argc, const char **argv)
     app.add_option("-i,--index", index_filename, "Collection basename")->required();
     app.add_option("-w,--wand", wand_data_filename, "Wand data filename");
     app.add_option("-q,--query", query_filename, "Queries filename");
+    app.add_option("--queries_size", queries_size, "Queries size")->required();
     app.add_flag("--compressed-wand", compressed, "Compressed wand input file");
     app.add_option("-k", k, "k value");
     app.add_option("-p", policy, "policy")->required();
@@ -311,16 +314,34 @@ int main(int argc, const char **argv)
     if (extract) {
         std::cout << "qid\tusec\n";
     }
+    std::cout << "Parsing queries..." << std::endl;
 
-    std::vector<Query> queries;
-    auto parse_query = resolve_query_parser(queries, terms_file, stopwords_filename, stemmer);
+   
+
+
+    std::vector<Query> myVec;
+    auto parse_query = resolve_query_parser(myVec, terms_file, stopwords_filename, stemmer);
     if (query_filename) {
         std::ifstream is(*query_filename);
         io::for_each_line(is, parse_query);
     } else {
         io::for_each_line(std::cin, parse_query);
     }
+    std::cout << "Queries size file: " << myVec.size() << std::endl;
+    std::vector<Query> queries(myVec.begin(), myVec.begin() + queries_size);
+    std::cout << "Queries size: " << queries.size() << std::endl;
 
+    ofstream myfile;
+    myfile.open ("queries_sample.txt");
+
+    for (auto const &q : queries) {
+        for (auto t : q.terms) {
+            myfile << t << " ";
+        }
+        myfile << std::endl;
+    }
+    myfile.close();
+    
     /**/
     if (false) {
 #define LOOP_BODY(R, DATA, T)                                                          \

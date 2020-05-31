@@ -253,6 +253,7 @@ int main(int argc, const char **argv)
     bool compressed = false;
     bool extract = false;
     bool silent = false;
+    uint64_t queries_size;
 
     CLI::App app{"queries - a tool for performing queries on an index."};
     app.set_config("--config", "", "Configuration .ini file", false);
@@ -261,6 +262,7 @@ int main(int argc, const char **argv)
     app.add_option("-i,--index", index_filename, "Collection basename")->required();
     app.add_option("-w,--wand", wand_data_filename, "Wand data filename");
     app.add_option("-q,--query", query_filename, "Queries filename");
+    app.add_option("--queries_size", queries_size, "Queries size")->required();
     app.add_flag("--compressed-wand", compressed, "Compressed wand input file");
     app.add_option("-k", k, "k value");
     app.add_option("-T,--thresholds", thresholds_filename, "k value");
@@ -280,14 +282,18 @@ int main(int argc, const char **argv)
         std::cout << "qid\tusec\n";
     }
 
-    std::vector<Query> queries;
-    auto parse_query = resolve_query_parser(queries, terms_file, stopwords_filename, stemmer);
+        std::vector<Query> myVec;
+    auto parse_query = resolve_query_parser(myVec, terms_file, stopwords_filename, stemmer);
     if (query_filename) {
         std::ifstream is(*query_filename);
         io::for_each_line(is, parse_query);
     } else {
         io::for_each_line(std::cin, parse_query);
     }
+    std::cout << "Queries size file: " << myVec.size() << std::endl;
+    std::vector<Query> queries(myVec.begin(), myVec.begin() + queries_size);
+    std::cout << "Queries size: " << queries.size() << std::endl;
+
 
     /**/
     if (false) {
