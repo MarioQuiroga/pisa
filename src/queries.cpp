@@ -282,6 +282,8 @@ int main(int argc, const char **argv)
         std::cout << "qid\tusec\n";
     }
 
+	std::vector<Query> queries;
+
         std::vector<Query> myVec;
     auto parse_query = resolve_query_parser(myVec, terms_file, stopwords_filename, stemmer);
     if (query_filename) {
@@ -291,7 +293,11 @@ int main(int argc, const char **argv)
         io::for_each_line(std::cin, parse_query);
     }
     std::cout << "Queries size file: " << myVec.size() << std::endl;
-    std::vector<Query> queries(myVec.begin(), myVec.begin() + queries_size);
+    if (queries_size>myVec.size()){
+	     queries = myVec;
+    }else{
+	     queries = std::vector<Query>(myVec.begin(), myVec.begin() + queries_size);
+    }
     std::cout << "Queries size: " << queries.size() << std::endl;
 
 
