@@ -10,7 +10,7 @@ template<typename Key,
          typename hash, 
          template<typename, class, typename> class Policy>
 class Cache {
-    std::unordered_map<Key, Data*, hash> storage;
+    //std::unordered_map<Key, std::pair<Data*, typename std::list<Key>::iterator>, hash> storage;
     Policy<Key, Data, hash> policy;
     int max_entries;
     int cur_entries;
@@ -27,14 +27,22 @@ public:
 
     Data * get(Key key){
         count_queries += 1;
-        typename std::unordered_map<Key, Data*, hash>::iterator i = storage.find(key);
+        //typename std::unordered_map<Key, Data*, hash>::iterator i = storage.find(key);
+        /*typename std::unordered_map<Key, std::pair<Data*, typename std::list<Key>::iterator>, hash>::iterator i = storage.find(key);
         if(i == storage.end()){
             return NULL;
+        }*/
+        
+        Data * res = policy.get(key);
+        if (res != NULL){
+            count_hit += 1;    
         }
+        return res;
+        /*
         // return value, but first update its placed in your policy
-        policy.update_place(key);
-        count_hit += 1;
-        return i->second;
+        typename std::list<Key>::iterator it = i->second.second;
+        policy.update_place(key, it, storage);        
+        return i->second.first;*/
     }
 
     double get_hit_ratio(){
@@ -43,15 +51,17 @@ public:
 
 
     void insert(Key key, Data data){
-        typename std::unordered_map<Key, Data*, hash>::iterator i = storage.find(key);
+        //Data * d = new Data(data.block, data.next_ptr);
+        //policy.insert(key, d, max_entries, &cur_entries);
+
+        policy.insert(key, data, max_entries, &cur_entries);
+
+        /*
+        typename std::unordered_map<Key, std::pair<Data*, typename std::list<Key>::iterator>, hash>::iterator i = storage.find(key);
         if(i == storage.end()){
             Data * d = new Data(data.block, data.next_ptr);   
             policy.insert(key, d, storage, max_entries, &cur_entries);
-        }
-    }
-
-    bool empty(){
-        return storage.empty();
+        }*/
     }
 
     int get_count_entries(){

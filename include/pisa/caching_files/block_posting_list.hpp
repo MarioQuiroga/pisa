@@ -99,6 +99,7 @@ namespace pisa {
                 , m_block_endpoints(m_block_maxs + 4 * m_blocks)
                 , m_blocks_data(m_block_endpoints + 4 * (m_blocks - 1))
                 , m_universe(universe)
+                , m_term_id(term_id)
             {
                 if (Profile) {
                     // std::cout << "OPEN\t" << m_term_id << "\t" << m_blocks << "\n";
@@ -334,8 +335,8 @@ namespace pisa {
                     m_freqs_decoded = false;
                     //store in cache 
                     std::vector<uint32_t> docs(m_docs_buf);
-                    Cache_data  data(docs, (unsigned int*)m_freqs_block_data);
-
+                    //Cache_data  data(docs, (unsigned int*)m_freqs_block_data);
+                    Cache_data data(docs, (unsigned int*)m_freqs_block_data);  
                     //Cache_data  data(m_docs_buf, (unsigned int*)m_freqs_block_data);
                     m_cache->insert(std::pair<uint64_t, uint64_t>(m_term_id, block), data);			
                 }
@@ -351,21 +352,34 @@ namespace pisa {
             void PISA_NOINLINE decode_freqs_block()
             {
                 //search in cache
-                Cache_data * data = m_cache->get(type_pair(m_term_id, m_cur_block));		
-                if(data->m_freq_decoded){
-                    m_freqs_buf = data->freqs; 
-                    unsigned int* next_block = data->next_ptr;	
-                    intrinsics::prefetch(next_block);
+                Cache_data * data = m_cache->get(type_pair(m_term_id, m_cur_block));
+                if (data!= NULL){		
+                    if(data->m_freq_decoded){
+                        m_freqs_buf = data->freqs; 
+                        unsigned int* next_block = data->next_ptr;	
+                        intrinsics::prefetch(next_block);
+                    }
+                    else{
+                        const uint8_t* next_block = BlockCodec::decode(m_freqs_block_data, m_freqs_buf.data(),
+                                                                       uint32_t(-1), m_cur_block_size);
+                        intrinsics::prefetch(next_block);
+                        if (Profile) {
+                            ++m_block_profile[2 * m_cur_block + 1];
+                        }
+                        //store in cache
+                        data->freqs = m_freqs_buf;
+                        data->m_freq_decoded = true;
+                    }
                 }else{
-                            const uint8_t* next_block = BlockCodec::decode(m_freqs_block_data, m_freqs_buf.data(),
+                    const uint8_t* next_block = BlockCodec::decode(m_freqs_block_data, m_freqs_buf.data(),
                                                                         uint32_t(-1), m_cur_block_size);
                     intrinsics::prefetch(next_block);
                     if (Profile) {
                         ++m_block_profile[2 * m_cur_block + 1];
                     }
                     //store in cache
-                    data->freqs = m_freqs_buf;
-                    data->m_freq_decoded = true;
+                    //data->freqs = m_freqs_buf;
+                    //data->m_freq_decoded = true;
                 }
                 m_freqs_decoded = true;
                 /*

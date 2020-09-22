@@ -381,7 +381,7 @@ int main(int argc, const char **argv)
                                                                 k,                       \
                                                                 extract, policy, size_cache);                \
             }                                                                          \
-        }                                                                               \
+        }/*                                                                               \
         if (policy.compare("lfuda")==0){                                                   \
             if (compressed) {                                                              \
                 perftest<BOOST_PP_CAT(T, _index), wand_uniform_index, Policies::lfuda_cache>(index_filename,      \
@@ -402,7 +402,7 @@ int main(int argc, const char **argv)
                                                                 k,                       \
                                                                 extract, policy, size_cache);                \
             }                                                                          \
-        }                                                                               \
+        }*/                                                                               \
         /**/
 
         BOOST_PP_SEQ_FOR_EACH(LOOP_BODY, _, PISA_INDEX_TYPES);

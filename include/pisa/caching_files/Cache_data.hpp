@@ -10,14 +10,15 @@ public:
         count = c;
     }*/
 
-    Cache_data(std::vector<uint32_t> block,
-                unsigned int * next_ptr){
-        this->block = block;
-        this->freqs = std::vector<uint32_t>(),
-        this->next_ptr = next_ptr;
-        this->m_freq_decoded = false;
+    Cache_data(std::vector<uint32_t> b,
+                unsigned int * n){
+        block = b;
+        freqs = std::vector<uint32_t>(),
+        next_ptr = n;
+        m_freq_decoded = false;
     }
-    Cache_data(){
-        
+    Cache_data(){        
+    }
+    ~Cache_data(){    
     }
 };
