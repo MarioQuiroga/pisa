@@ -262,7 +262,7 @@ void recursive_graph_bisection(document_range<Iterator> documents,
         process_partition(partition, compute_move_gains_caching<false, Iterator>);
     }
 
-    p.update(documents.size());
+    //p.update(documents.size());
     if (depth > 1 && documents.size() > 2) {
         tbb::parallel_invoke(
             [&] {
@@ -311,7 +311,7 @@ void recursive_graph_bisection(std::vector<computation_node<Iterator>> nodes, pr
                     std::sort(node.partition.left.begin(), node.partition.left.end());
                     std::sort(node.partition.right.begin(), node.partition.right.end());
                 }
-                p.update(node.partition.size());
+                //p.update(node.partition.size());
             });
         });
         level_group.wait();
